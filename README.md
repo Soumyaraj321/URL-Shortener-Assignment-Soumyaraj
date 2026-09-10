@@ -73,24 +73,3 @@ From the root directory of the project, run:
 dotnet run --project UrlShortener.Api
 
 
-### 4. High-Level Flow
-
-```text
-User / Browser / API Client
-          |
-          v
-     ASP.NET Core API
-          |
-          v
-      Controllers
-          |
-          v
-     Application Service
-          |
-          v
-       EF Core
-          |
-          v
-        SQLite
-
-
