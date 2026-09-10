@@ -1,5 +1,4 @@
-﻿```markdown
-# Ambiguous Requirement Scenario
+﻿# Ambiguous Requirement Scenario
 
 ## Scenario
 
@@ -108,3 +107,4 @@ Validation
         |
         v
 Document Limitations
+```

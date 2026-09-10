@@ -1,5 +1,4 @@
-﻿```md
-# Testing Approach, Limitations, and Trade-offs
+﻿# Testing Approach, Limitations, and Trade-offs
 
 ## 1. Testing Objective
 
@@ -31,6 +30,7 @@ Tests verify:
 - Unsupported schemes such as FTP are rejected.
 - JavaScript URLs are rejected.
 
+# 3. Test Structure
 
 Unit Tests
 ├── URL validation

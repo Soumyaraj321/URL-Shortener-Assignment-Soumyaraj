@@ -40,3 +40,4 @@ Output:
   "shortCode": "aB12xZ",
   "shortUrl": "/aB12xZ"
 }
+```

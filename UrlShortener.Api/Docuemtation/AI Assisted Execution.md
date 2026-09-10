@@ -1,5 +1,4 @@
-﻿```markdown
-# AI Engineering Log
+﻿# AI Engineering Log
 
 ## Purpose
 
@@ -44,13 +43,12 @@ Manual Validation
     |
     v
 Engineer Approval
-
-
-
+```
 
 
 # Controlled Oversight 
 
+```text
 Engineer Defines Task
         |
         v
@@ -71,3 +69,4 @@ Engineer Reviews
              |
              v
        Engineer Approval
+```

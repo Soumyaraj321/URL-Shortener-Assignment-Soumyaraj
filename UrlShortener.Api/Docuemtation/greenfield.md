@@ -1,5 +1,4 @@
-﻿```markdown
-# Greenfield Scenario
+﻿# Greenfield Scenario
 
 ## Scenario
 
@@ -42,3 +41,4 @@ Services
 EF Core
     |
 SQLite
+```

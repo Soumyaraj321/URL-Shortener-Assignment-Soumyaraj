@@ -30,10 +30,7 @@
 +-- docs
 
 
-
-
-```markdown
-# Final Engineering Summary
+# Engineering Summary
 
 ## 1. Objective
 

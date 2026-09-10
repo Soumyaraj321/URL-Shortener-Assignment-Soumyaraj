@@ -13,3 +13,7 @@ Verify the .NET SDK:
 
 ```bash
 dotnet --version
+
+From the root directory of the project, run:
+
+dotnet run --project UrlShortener.Api

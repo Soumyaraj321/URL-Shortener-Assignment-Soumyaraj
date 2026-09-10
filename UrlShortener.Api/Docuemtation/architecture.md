@@ -1,5 +1,4 @@
-﻿```markdown
-# Architecture Overview
+﻿# Architecture Overview
 
 ## System Architecture
 
@@ -24,3 +23,4 @@ The application uses a layered ASP.NET Core architecture.
              |
              v
            SQLite
+```
