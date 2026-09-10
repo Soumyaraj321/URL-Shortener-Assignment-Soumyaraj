@@ -74,20 +74,31 @@ public class UrlShortenerService : IUrlShortenerService
             "Unable to generate a unique short code.");
     }
 
-    public async Task<string?> GetRedirectUrlAsync(
-        string shortCode,
-        string? userAgent,
-        string? referrer,
-        CancellationToken cancellationToken = default)
+    public async Task<RedirectResult> GetRedirectUrlAsync(
+    string shortCode,
+    string? userAgent,
+    string? referrer,
+    CancellationToken cancellationToken = default)
     {
         var shortUrl = await _dbContext.ShortUrls
             .FirstOrDefaultAsync(
                 x => x.ShortCode == shortCode,
                 cancellationToken);
 
-        if (shortUrl is null || !shortUrl.IsActive)
+        if (shortUrl is null)
         {
-            return null;
+            return new RedirectResult
+            {
+                Status = RedirectStatus.NotFound
+            };
+        }
+
+        if (!shortUrl.IsActive)
+        {
+            return new RedirectResult
+            {
+                Status = RedirectStatus.Inactive
+            };
         }
 
         var click = new Click
@@ -106,7 +117,11 @@ public class UrlShortenerService : IUrlShortenerService
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
-        return shortUrl.LongUrl;
+        return new RedirectResult
+        {
+            Status = RedirectStatus.Active,
+            OriginalUrl = shortUrl.LongUrl
+        };
     }
 
     public async Task<ShortUrlResponse?> GetAsync(
@@ -142,6 +157,27 @@ CancellationToken cancellationToken = default)
                 LastAccessedAt = x.LastAccessedAt
             })
             .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    public async Task<bool> DeactivateAsync(
+    string shortCode,
+    CancellationToken cancellationToken = default)
+    {
+        var shortUrl = await _dbContext.ShortUrls
+            .FirstOrDefaultAsync(
+                x => x.ShortCode == shortCode,
+                cancellationToken);
+
+        if (shortUrl is null)
+        {
+            return false;
+        }
+
+        shortUrl.IsActive = false;
+
+        await _dbContext.SaveChangesAsync(cancellationToken);
+
+        return true;
     }
 
 }

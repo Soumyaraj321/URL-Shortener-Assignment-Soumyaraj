@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using UrlShortener.Api.Data;
+using UrlShortener.Api.Middleware;
 using UrlShortener.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,16 @@ builder.Services.AddScoped<IUrlValidator, UrlValidator>();
 builder.Services.AddSingleton<IShortCodeGenerator, ShortCodeGenerator>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider
+        .GetRequiredService<AppDbContext>();
+
+    dbContext.Database.Migrate();
+}
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

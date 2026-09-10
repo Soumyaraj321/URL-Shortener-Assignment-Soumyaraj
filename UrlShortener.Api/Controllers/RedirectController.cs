@@ -21,20 +21,30 @@ public class RedirectController : ControllerBase
         var userAgent = Request.Headers.UserAgent.ToString();
         var referrer = Request.Headers.Referer.ToString();
 
-        var originalUrl = await _urlShortenerService.GetRedirectUrlAsync(
+        var result = await _urlShortenerService.GetRedirectUrlAsync(
             shortCode,
             userAgent,
             referrer,
             cancellationToken);
 
-        if (originalUrl is null)
+        if (result.Status == RedirectStatus.NotFound)
         {
             return NotFound(new
             {
-                error = "Short URL not found or inactive."
+                error = "Short URL not found."
             });
         }
 
-        return Redirect(originalUrl);
+        if (result.Status == RedirectStatus.Inactive)
+        {
+            return StatusCode(
+                StatusCodes.Status410Gone,
+                new
+                {
+                    error = "Short URL is no longer active."
+                });
+        }
+
+        return Redirect(result.OriginalUrl!);
     }
 }

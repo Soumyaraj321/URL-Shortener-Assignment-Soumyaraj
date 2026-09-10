@@ -8,7 +8,7 @@ public interface IUrlShortenerService
         CreateShortUrlRequest request,
         CancellationToken cancellationToken = default);
 
-    Task<string?> GetRedirectUrlAsync(
+    Task<RedirectResult> GetRedirectUrlAsync(
         string shortCode,
         string? userAgent,
         string? referrer,
@@ -19,6 +19,10 @@ public interface IUrlShortenerService
         CancellationToken cancellationToken = default);
 
     Task<AnalyticsResponse?> GetAnalyticsAsync(
+        string shortCode,
+        CancellationToken cancellationToken = default);
+
+    Task<bool> DeactivateAsync(
         string shortCode,
         CancellationToken cancellationToken = default);
 }

@@ -24,24 +24,14 @@ public class UrlsController : ControllerBase
         [FromBody] CreateShortUrlRequest request,
         CancellationToken cancellationToken)
     {
-        try
-        {
-            var result = await _urlShortenerService.CreateAsync(
-                request,
-                cancellationToken);
+        var result = await _urlShortenerService.CreateAsync(
+            request,
+            cancellationToken);
 
-            return CreatedAtAction(
-                nameof(Get),
-                new { shortCode = result.ShortCode },
-                result);
-        }
-        catch (ArgumentException ex)
-        {
-            return BadRequest(new
-            {
-                error = ex.Message
-            });
-        }
+        return CreatedAtAction(
+            nameof(Get),
+            new { shortCode = result.ShortCode },
+            result);
     }
 
     [HttpGet("{shortCode}")]
@@ -90,5 +80,27 @@ public class UrlsController : ControllerBase
         }
 
         return Ok(result);
+    }
+
+    [HttpDelete("{shortCode}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Deactivate(
+        string shortCode,
+        CancellationToken cancellationToken)
+    {
+        var deactivated = await _urlShortenerService.DeactivateAsync(
+            shortCode,
+            cancellationToken);
+
+        if (!deactivated)
+        {
+            return NotFound(new
+            {
+                error = "Short URL not found."
+            });
+        }
+
+        return NoContent();
     }
 }
