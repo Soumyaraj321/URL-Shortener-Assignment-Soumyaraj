@@ -11,21 +11,31 @@ public class UrlValidator : IUrlValidator
             return false;
         }
 
+        url = url.Trim();
+
         if (url.Length > MaxUrlLength)
         {
             return false;
         }
 
-        if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+        if (!Uri.TryCreate(
+                url,
+                UriKind.Absolute,
+                out var uri))
         {
             return false;
         }
 
-        return uri.Scheme.Equals(
-                   Uri.UriSchemeHttp,
-                   StringComparison.OrdinalIgnoreCase)
-               || uri.Scheme.Equals(
-                   Uri.UriSchemeHttps,
-                   StringComparison.OrdinalIgnoreCase);
+        if (!uri.Scheme.Equals(
+                Uri.UriSchemeHttp,
+                StringComparison.OrdinalIgnoreCase)
+            && !uri.Scheme.Equals(
+                Uri.UriSchemeHttps,
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return false;
+        }
+
+        return !string.IsNullOrWhiteSpace(uri.Host);
     }
 }

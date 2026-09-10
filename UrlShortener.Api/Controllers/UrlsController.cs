@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using UrlShortener.Api.DTOs;
 using UrlShortener.Api.Services;
 
@@ -16,6 +17,7 @@ public class UrlsController : ControllerBase
     }
 
     [HttpPost]
+    [EnableRateLimiting("url-creation")]
     [ProducesResponseType(
         typeof(CreateShortUrlResponse),
         StatusCodes.Status201Created)]
