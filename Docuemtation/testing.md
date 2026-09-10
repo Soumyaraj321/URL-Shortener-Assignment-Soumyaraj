@@ -32,6 +32,7 @@ Tests verify:
 
 # 3. Test Structure
 
+```text
 Unit Tests
 ├── URL validation
 ├── Short-code generation
@@ -53,3 +54,4 @@ Integration Tests
 ├── Deactivation
 ├── Unknown URL
 └── Invalid URL
+```

@@ -1,4 +1,6 @@
-﻿UrlShortener
+﻿
+```text
+UrlShortener
 |
 +-- UrlShortener.Api
 |   |
@@ -28,6 +30,7 @@
 +-- UrlShortener.Tests
 |
 +-- docs
+```
 
 
 # Engineering Summary
