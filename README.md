@@ -85,3 +85,13 @@ User / Browser / API Client
           |
           v
         SQLite
+
+
+## Run the Application
+
+From the root directory of the project, run:
+
+```sh
+dotnet run --project UrlShortener.Api
+```
+
