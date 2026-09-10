@@ -104,6 +104,28 @@ public class UrlShortenerApiTests
             "https://example.com/",
             redirectResponse.Headers.Location?.ToString());
 
+        // Get Admin JWT token
+        var tokenResponse = await _client.PostAsync(
+            "/api/auth/token",
+            null);
+
+        Assert.Equal(
+            HttpStatusCode.OK,
+            tokenResponse.StatusCode);
+
+        var tokenResult =
+            await tokenResponse.Content
+                .ReadFromJsonAsync<TokenResponse>();
+
+        Assert.NotNull(tokenResult);
+        Assert.False(string.IsNullOrWhiteSpace(tokenResult.Token));
+
+        // Add JWT token to request
+        _client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue(
+                "Bearer",
+                tokenResult.Token);
+
         var analyticsResponse = await _client.GetAsync(
             $"/api/urls/{created.ShortCode}/analytics");
 
@@ -133,6 +155,28 @@ public class UrlShortenerApiTests
         var created =
             await createResponse.Content
                 .ReadFromJsonAsync<CreateShortUrlResponse>();
+
+        // Get Admin JWT token
+        var tokenResponse = await _client.PostAsync(
+            "/api/auth/token",
+            null);
+
+        Assert.Equal(
+            HttpStatusCode.OK,
+            tokenResponse.StatusCode);
+
+        var tokenResult =
+            await tokenResponse.Content
+                .ReadFromJsonAsync<TokenResponse>();
+
+        Assert.NotNull(tokenResult);
+        Assert.False(string.IsNullOrWhiteSpace(tokenResult.Token));
+
+        // Add JWT token to request
+        _client.DefaultRequestHeaders.Authorization =
+            new System.Net.Http.Headers.AuthenticationHeaderValue(
+                "Bearer",
+                tokenResult.Token);
 
         var deleteResponse = await _client.DeleteAsync(
             $"/api/urls/{created!.ShortCode}");

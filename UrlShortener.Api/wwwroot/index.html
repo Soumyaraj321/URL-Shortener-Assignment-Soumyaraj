@@ -1,0 +1,919 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>URL Shortener</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #f5f7fb;
+            --card: #ffffff;
+            --text: #172033;
+            --muted: #697386;
+            --border: #e2e7f0;
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --success: #15803d;
+            --danger: #dc2626;
+            --shadow: 0 18px 45px rgba(25, 35, 60, 0.08);
+            --radius: 18px;
+        }
+
+        body {
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top left, rgba(79, 70, 229, 0.08), transparent 30%), var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .container {
+            width: min(1050px, calc(100% - 32px));
+            margin: 0 auto;
+        }
+
+        header {
+            padding: 42px 0 28px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            display: grid;
+            place-items: center;
+            background: var(--primary);
+            color: white;
+            font-size: 23px;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.25);
+        }
+
+        h1 {
+            font-size: clamp(28px, 4vw, 38px);
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            margin-top: 7px;
+            font-size: 15px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1.25fr 0.75fr;
+            gap: 22px;
+            padding-bottom: 42px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+        }
+
+            .card + .card {
+                margin-top: 22px;
+            }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .card-description {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: 650;
+            margin-bottom: 8px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 11px;
+            padding: 12px 14px;
+            font-size: 14px;
+            color: var(--text);
+            outline: none;
+            background: #fff;
+            transition: border-color .2s, box-shadow .2s;
+        }
+
+            input:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+            }
+
+        button {
+            border: 0;
+            border-radius: 11px;
+            padding: 12px 16px;
+            font-size: 14px;
+            font-weight: 650;
+            cursor: pointer;
+            transition: transform .15s, background .15s, opacity .15s;
+            white-space: nowrap;
+        }
+
+            button:hover {
+                transform: translateY(-1px);
+            }
+
+            button:disabled {
+                opacity: .6;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        .primary {
+            background: var(--primary);
+            color: white;
+        }
+
+            .primary:hover {
+                background: var(--primary-dark);
+            }
+
+        .secondary {
+            background: #eef0ff;
+            color: var(--primary-dark);
+        }
+
+        .danger {
+            background: #fee2e2;
+            color: var(--danger);
+        }
+
+        .result {
+            margin-top: 18px;
+            padding: 16px;
+            border-radius: 13px;
+            border: 1px solid #dbe3ff;
+            background: #f7f8ff;
+            display: none;
+        }
+
+            .result.show {
+                display: block;
+            }
+
+        .result-label {
+            color: var(--muted);
+            font-size: 12px;
+            margin-bottom: 6px;
+        }
+
+        .short-url-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .short-url {
+            flex: 1;
+            border: 1px solid var(--border);
+            background: white;
+            border-radius: 9px;
+            padding: 10px 12px;
+            font-size: 14px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .message {
+            display: none;
+            margin-top: 14px;
+            padding: 11px 13px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+            .message.show {
+                display: block;
+            }
+
+            .message.error {
+                background: #fef2f2;
+                color: #b91c1c;
+                border: 1px solid #fecaca;
+            }
+
+            .message.success {
+                background: #f0fdf4;
+                color: var(--success);
+                border: 1px solid #bbf7d0;
+            }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .stat {
+            padding: 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: #fafbfe;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 11px;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-weight: 700;
+            font-size: 15px;
+            word-break: break-word;
+        }
+
+        .details {
+            margin-top: 18px;
+            display: none;
+        }
+
+            .details.show {
+                display: block;
+            }
+
+        .detail-row {
+            padding: 11px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+            .detail-row:last-child {
+                border-bottom: 0;
+            }
+
+        .detail-label {
+            color: var(--muted);
+            font-size: 11px;
+            margin-bottom: 3px;
+        }
+
+        .detail-value {
+            font-size: 13px;
+            word-break: break-word;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+
+        .hint {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: 12px;
+            padding: 0 0 30px;
+        }
+
+        .spinner {
+            width: 15px;
+            height: 15px;
+            border: 2px solid rgba(255,255,255,.4);
+            border-top-color: white;
+            border-radius: 50%;
+            display: inline-block;
+            vertical-align: -3px;
+            animation: spin .7s linear infinite;
+            margin-right: 6px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @media (max-width: 780px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .input-row,
+            .short-url-row {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container">
+            <div class="brand">
+                <div class="brand-icon">↗</div>
+                <div>
+                    <h1>URL Shortener</h1>
+                    <p class="subtitle">Create, manage and analyze short links.</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="card" style="margin-bottom:22px;">
+            <div class="card-title">Admin Access</div>
+
+            <div class="card-description">
+                Generate a temporary admin token to access analytics
+                and deactivation features.
+            </div>
+
+            <button id="adminTokenButton" class="primary" type="button">
+                Generate Admin Token
+            </button>
+
+            <div id="adminTokenMessage" class="message"></div>
+        </div>
+        <div class="grid">
+            <section>
+                <div class="card">
+                    <div class="card-title">Create a short URL</div>
+                    <div class="card-description">
+                        Enter a valid HTTP or HTTPS URL and generate a secure short code.
+                    </div>
+
+                    <form id="createForm">
+                        <label for="longUrl">Destination URL</label>
+
+                        <div class="input-row">
+                            <input id="longUrl"
+                                   name="longUrl"
+                                   type="url"
+                                   placeholder="https://example.com/my-long-url"
+                                   maxlength="2048"
+                                   required />
+                            <button id="createButton" class="primary" type="submit">
+                                Shorten URL
+                            </button>
+                        </div>
+                    </form>
+
+                    <div id="createMessage" class="message"></div>
+
+                    <div id="createResult" class="result">
+                        <div class="result-label">Your short URL</div>
+
+                        <div class="short-url-row">
+                            <div id="shortUrl" class="short-url"></div>
+                            <button id="copyButton" class="secondary" type="button">
+                                Copy
+                            </button>
+                        </div>
+
+                        <div class="hint">
+                            The short code can be used with the root URL path.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">URL details</div>
+                    <div class="card-description">
+                        Look up an existing short code and view its current status.
+                    </div>
+
+                    <label for="lookupCode">Short code</label>
+
+                    <div class="input-row">
+                        <input id="lookupCode"
+                               type="text"
+                               placeholder="e.g. aB12xZ"
+                               maxlength="10" />
+                        <button id="lookupButton" class="primary" type="button">
+                            Lookup
+                        </button>
+                    </div>
+
+                    <div id="lookupMessage" class="message"></div>
+
+                    <div id="details" class="details">
+                        <div class="detail-row">
+                            <div class="detail-label">Short code</div>
+                            <div id="detailCode" class="detail-value"></div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="detail-label">Destination</div>
+                            <div id="detailLongUrl" class="detail-value"></div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="detail-label">Created</div>
+                            <div id="detailCreated" class="detail-value"></div>
+                        </div>
+
+                        <div class="detail-row">
+                            <div class="detail-label">Status</div>
+                            <div id="detailStatus" class="detail-value"></div>
+                        </div>
+
+                        <div class="actions">
+                            <button id="analyticsButton" class="secondary" type="button">
+                                View analytics
+                            </button>
+
+                            <button id="deactivateButton" class="danger" type="button">
+                                Deactivate
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="analytics" class="stats" style="display:none;">
+                        <div class="stat">
+                            <div class="stat-label">TOTAL CLICKS</div>
+                            <div id="totalClicks" class="stat-value">0</div>
+                        </div>
+
+                        <div class="stat">
+                            <div class="stat-label">LAST ACCESSED</div>
+                            <div id="lastAccessed" class="stat-value">Never</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <aside>
+                <div class="card">
+                    <div class="card-title">API capabilities</div>
+                    <div class="card-description">
+                        The application exposes the following core operations.
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">CREATE</div>
+                        <div class="detail-value">POST /api/urls</div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">LOOKUP</div>
+                        <div class="detail-value">GET /api/urls/{shortCode}</div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">REDIRECT</div>
+                        <div class="detail-value">GET /{shortCode}</div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">ANALYTICS</div>
+                        <div class="detail-value">GET /api/urls/{shortCode}/analytics</div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">DEACTIVATE</div>
+                        <div class="detail-value">DELETE /api/urls/{shortCode}</div>
+                    </div>
+
+                    <p class="hint">
+                        URL creation is rate limited and input validation is enforced
+                        by the backend.
+                    </p>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Engineering notes</div>
+                    <div class="card-description">
+                        Prototype reliability and security features.
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">SHORT CODES</div>
+                        <div class="detail-value">Cryptographically secure Base62 generation</div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">DATABASE</div>
+                        <div class="detail-value">SQLite + Entity Framework Core</div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">ANALYTICS</div>
+                        <div class="detail-value">Click count + last accessed timestamp</div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-label">DEACTIVATION</div>
+                        <div class="detail-value">Soft deactivation with HTTP 410</div>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <footer>
+        URL Shortener • ASP.NET Core
+    </footer>
+
+    <script>
+        let adminToken = null;
+
+        document
+            .getElementById("adminTokenButton")
+            .addEventListener("click", async () => {
+
+                const button =
+                    document.getElementById("adminTokenButton");
+
+                const message =
+                    document.getElementById("adminTokenMessage");
+
+                button.disabled = true;
+                button.textContent = "Generating...";
+
+                try {
+                    const response = await fetch("/api/auth/token", {
+                        method: "POST"
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(
+                            "Unable to generate admin token."
+                        );
+                    }
+
+                    const result = await response.json();
+
+                    adminToken = result.token;
+
+                    showMessage(
+                        message,
+                        "Admin access enabled for 60 minutes.",
+                        "success"
+                    );
+
+                } catch (error) {
+
+                    showMessage(
+                        message,
+                        error.message,
+                        "error"
+                    );
+
+                } finally {
+
+                    button.disabled = false;
+                    button.textContent = "Generate Admin Token";
+                }
+            });
+
+        const createForm = document.getElementById("createForm");
+        const createButton = document.getElementById("createButton");
+        const longUrlInput = document.getElementById("longUrl");
+        const createMessage = document.getElementById("createMessage");
+        const createResult = document.getElementById("createResult");
+        const shortUrlElement = document.getElementById("shortUrl");
+        const copyButton = document.getElementById("copyButton");
+
+        const lookupCode = document.getElementById("lookupCode");
+        const lookupButton = document.getElementById("lookupButton");
+        const lookupMessage = document.getElementById("lookupMessage");
+        const details = document.getElementById("details");
+        const analytics = document.getElementById("analytics");
+
+        let currentShortCode = null;
+
+        function showMessage(element, message, type) {
+            element.textContent = message;
+            element.className = `message show ${type}`;
+        }
+
+        function clearMessage(element) {
+            element.textContent = "";
+            element.className = "message";
+        }
+
+        function setLoading(button, loading, text) {
+            button.disabled = loading;
+
+            if (loading) {
+                button.innerHTML = `<span class="spinner"></span>${text}`;
+            } else {
+                button.textContent = text;
+            }
+        }
+
+        function formatDate(value) {
+            if (!value) {
+                return "Never";
+            }
+
+            const date = new Date(value);
+
+            if (Number.isNaN(date.getTime())) {
+                return value;
+            }
+
+            return date.toLocaleString();
+        }
+
+        async function readError(response) {
+            try {
+                const data = await response.json();
+                return data.detail || data.error || data.title || "Request failed.";
+            } catch {
+                return `Request failed with status ${response.status}.`;
+            }
+        }
+
+        createForm.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            clearMessage(createMessage);
+            createResult.classList.remove("show");
+
+            const longUrl = longUrlInput.value.trim();
+
+            if (!longUrl) {
+                showMessage(createMessage, "Please enter a URL.", "error");
+                return;
+            }
+
+            setLoading(createButton, true, "Shortening...");
+
+            try {
+                const response = await fetch("/api/urls", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        longUrl: longUrl
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(await readError(response));
+                }
+
+                const result = await response.json();
+
+                const absoluteShortUrl =
+                    `${window.location.origin}${result.shortUrl}`;
+
+                shortUrlElement.textContent = absoluteShortUrl;
+                createResult.classList.add("show");
+
+                showMessage(
+                    createMessage,
+                    "Short URL created successfully.",
+                    "success"
+                );
+
+                lookupCode.value = result.shortCode;
+                longUrlInput.value = "";
+            } catch (error) {
+                showMessage(
+                    createMessage,
+                    error.message || "Unable to create the short URL.",
+                    "error"
+                );
+            } finally {
+                setLoading(createButton, false, "Shorten URL");
+            }
+        });
+
+        copyButton.addEventListener("click", async () => {
+            const value = shortUrlElement.textContent;
+
+            if (!value) {
+                return;
+            }
+
+            try {
+                await navigator.clipboard.writeText(value);
+                copyButton.textContent = "Copied!";
+
+                setTimeout(() => {
+                    copyButton.textContent = "Copy";
+                }, 1500);
+            } catch {
+                showMessage(
+                    createMessage,
+                    "Unable to copy automatically. Please copy the URL manually.",
+                    "error"
+                );
+            }
+        });
+
+        lookupButton.addEventListener("click", async () => {
+            clearMessage(lookupMessage);
+            details.classList.remove("show");
+            analytics.style.display = "none";
+
+            const code = lookupCode.value.trim();
+
+            if (!code) {
+                showMessage(
+                    lookupMessage,
+                    "Please enter a short code.",
+                    "error"
+                );
+                return;
+            }
+
+            setLoading(lookupButton, true, "Looking up...");
+
+            try {
+                const response = await fetch(
+                    `/api/urls/${encodeURIComponent(code)}`
+                );
+
+                if (!response.ok) {
+                    throw new Error(await readError(response));
+                }
+
+                const result = await response.json();
+
+                currentShortCode = result.shortCode;
+
+                document.getElementById("detailCode").textContent =
+                    result.shortCode;
+
+                document.getElementById("detailLongUrl").textContent =
+                    result.longUrl;
+
+                document.getElementById("detailCreated").textContent =
+                    formatDate(result.createdAt);
+
+                document.getElementById("detailStatus").textContent =
+                    result.isActive ? "Active" : "Inactive";
+
+                document.getElementById("deactivateButton").style.display =
+                    result.isActive ? "inline-block" : "none";
+
+                details.classList.add("show");
+
+                showMessage(
+                    lookupMessage,
+                    "Short URL found.",
+                    "success"
+                );
+            } catch (error) {
+                showMessage(
+                    lookupMessage,
+                    error.message || "Short URL not found.",
+                    "error"
+                );
+            } finally {
+                setLoading(lookupButton, false, "Lookup");
+            }
+        });
+
+        lookupCode.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+                lookupButton.click();
+            }
+        });
+
+        document.getElementById("analyticsButton")
+            .addEventListener("click", async () => {
+                if (!currentShortCode) {
+                    return;
+                }
+
+                const button = document.getElementById("analyticsButton");
+                setLoading(button, true, "Loading...");
+
+                try {
+                    const response = await fetch(
+                        `/api/urls/${encodeURIComponent(currentShortCode)}/analytics`,
+                        {
+                            headers: adminToken
+                                ? {
+                                    "Authorization": `Bearer ${adminToken}`
+                                }
+                                : {}
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error(await readError(response));
+                    }
+
+                    const result = await response.json();
+
+                    document.getElementById("totalClicks").textContent =
+                        result.totalClicks;
+
+                    document.getElementById("lastAccessed").textContent =
+                        formatDate(result.lastAccessedAt);
+
+                    analytics.style.display = "grid";
+                } catch (error) {
+                    showMessage(
+                        lookupMessage,
+                        error.message || "Unable to load analytics.",
+                        "error"
+                    );
+                } finally {
+                    setLoading(button, false, "View analytics");
+                }
+            });
+
+        document.getElementById("deactivateButton")
+            .addEventListener("click", async () => {
+                if (!currentShortCode) {
+                    return;
+                }
+
+                const confirmed = confirm(
+                    "Are you sure you want to deactivate this short URL?"
+                );
+
+                if (!confirmed) {
+                    return;
+                }
+
+                const button = document.getElementById("deactivateButton");
+                setLoading(button, true, "Deactivating...");
+
+                try {
+                    const response = await fetch(
+                        `/api/urls/${encodeURIComponent(currentShortCode)}`,
+                        {
+                            method: "DELETE",
+                            headers: adminToken
+                                ? {
+                                    "Authorization": `Bearer ${adminToken}`
+                                }
+                                : {}
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error(await readError(response));
+                    }
+
+                    document.getElementById("detailStatus").textContent =
+                        "Inactive";
+
+                    button.style.display = "none";
+
+                    showMessage(
+                        lookupMessage,
+                        "Short URL deactivated. Future redirects will return HTTP 410.",
+                        "success"
+                    );
+                } catch (error) {
+                    showMessage(
+                        lookupMessage,
+                        error.message || "Unable to deactivate the URL.",
+                        "error"
+                    );
+                } finally {
+                    if (button.style.display !== "none") {
+                        setLoading(button, false, "Deactivate");
+                    }
+                }
+            });
+    </script>
+</body>
+</html>
