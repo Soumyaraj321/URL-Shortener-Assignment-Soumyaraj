@@ -1,6 +1,6 @@
 ﻿using UrlShortener.Api.DTOs;
 
-namespace UrlShortener.Api.Services;
+namespace UrlShortener.Api.Services.Interfaces;
 
 public interface IUrlShortenerService
 {

@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using UrlShortener.Api.Services.Interfaces;
 
 namespace UrlShortener.Api.Services;
 

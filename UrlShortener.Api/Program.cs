@@ -7,23 +7,20 @@ using System.Threading.RateLimiting;
 using UrlShortener.Api.Data;
 using UrlShortener.Api.Middleware;
 using UrlShortener.Api.Services;
+using UrlShortener.Api.Services.Interfaces;
 using UrlShortener.Api.Services.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Controllers
 builder.Services.AddControllers();
 
-// Swagger / OpenAPI
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Database
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Application services
 builder.Services.AddScoped<IUrlShortenerService, UrlShortenerService>();
 builder.Services.AddScoped<IUrlValidator, UrlValidator>();
 builder.Services.AddSingleton<IShortCodeGenerator, ShortCodeGenerator>();
@@ -61,7 +58,6 @@ builder.Services
 
 builder.Services.AddAuthorization();
 
-// Rate limiting
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode =
@@ -79,7 +75,6 @@ builder.Services.AddRateLimiter(options =>
 
 var app = builder.Build();
 
-// Apply database migrations automatically
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider
@@ -99,27 +94,21 @@ using (var scope = app.Services.CreateScope())
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-// Request size protection
 app.UseMiddleware<RequestSizeMiddleware>();
 
-// Global exception handling
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
-// Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
-// HTTPS
 app.UseHttpsRedirection();
 
-// Authentication and Authorization
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Security headers
 app.Use(async (context, next) =>
 {
     context.Response.Headers["X-Content-Type-Options"] =
@@ -134,15 +123,12 @@ app.Use(async (context, next) =>
     await next();
 });
 
-// Rate limiting
 app.UseRateLimiter();
 
-// API controllers
 app.MapControllers();
 
 app.Run();
 
-// Required for integration tests
 public partial class Program
 {
 }

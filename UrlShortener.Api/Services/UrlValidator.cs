@@ -1,4 +1,6 @@
-﻿namespace UrlShortener.Api.Services;
+﻿using UrlShortener.Api.Services.Interfaces;
+
+namespace UrlShortener.Api.Services;
 
 public class UrlValidator : IUrlValidator
 {

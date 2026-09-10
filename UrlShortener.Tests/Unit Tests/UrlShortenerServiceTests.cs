@@ -3,6 +3,7 @@ using Moq;
 using UrlShortener.Api.Data;
 using UrlShortener.Api.DTOs;
 using UrlShortener.Api.Services;
+using UrlShortener.Api.Services.Interfaces;
 
 namespace UrlShortener.Tests.Services;
 

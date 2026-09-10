@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using UrlShortener.Api.DTOs;
-using UrlShortener.Api.Services;
+using UrlShortener.Api.Services.Interfaces;
 using UrlShortener.Api.Services.Validators;
 
 namespace UrlShortener.Api.Controllers;

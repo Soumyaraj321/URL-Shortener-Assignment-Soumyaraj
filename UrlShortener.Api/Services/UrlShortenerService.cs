@@ -2,6 +2,7 @@
 using UrlShortener.Api.Data;
 using UrlShortener.Api.Domain.Entities;
 using UrlShortener.Api.DTOs;
+using UrlShortener.Api.Services.Interfaces;
 
 namespace UrlShortener.Api.Services;
 
