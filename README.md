@@ -66,10 +66,4 @@ The application provides the following capabilities:
 - Unit tests
 - Integration tests
 
-## 3. Run the Application
-
-From the root directory of the project, run:
-
-dotnet run --project UrlShortener.Api
-
 
