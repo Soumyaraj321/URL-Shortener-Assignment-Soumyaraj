@@ -66,7 +66,14 @@ The application provides the following capabilities:
 - Unit tests
 - Integration tests
 
-### High-Level Flow
+## 3. Run the Application
+
+From the root directory of the project, run:
+
+dotnet run --project UrlShortener.Api
+
+
+### 4. High-Level Flow
 
 ```text
 User / Browser / API Client
@@ -86,12 +93,4 @@ User / Browser / API Client
           v
         SQLite
 
-
-## Run the Application
-
-From the root directory of the project, run:
-
-```sh
-dotnet run --project UrlShortener.Api
-```
 
