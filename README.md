@@ -28,8 +28,6 @@ The system provides:
 - Unit and integration testing
 - Simple browser-based UI
 
-The engineer remains responsible for reviewing and approving AI-assisted outputs, validating correctness, and making final engineering decisions.
----
 ## 2. Technology Stack
 
 | Area | Technology | 
@@ -49,21 +47,41 @@ The engineer remains responsible for reviewing and approving AI-assisted outputs
 
 ---
 
-## 3. Architecture
+The application provides the following capabilities:
 
-The application follows a layered architecture:
+- Create a shortened URL
+- Generate unique short codes
+- Redirect users to the original URL
+- Look up short URL information
+- Track click analytics
+- Deactivate short URLs
+- JWT authentication
+- Role-based authorization
+- Rate limiting
+- Request-size protection
+- Global exception handling
+- Security response headers
+- Swagger/OpenAPI documentation
+- Browser-based UI
+- Unit tests
+- Integration tests
+
+### High-Level Flow
 
 ```text
-Browser / API Client
-        |
-        v
-Controllers
-        |
-        v
-Application Services
-        |
-        v
-EF Core / AppDbContext
-        |
-        v
-SQLite Database
+User / Browser / API Client
+          |
+          v
+     ASP.NET Core API
+          |
+          v
+      Controllers
+          |
+          v
+     Application Service
+          |
+          v
+       EF Core
+          |
+          v
+        SQLite
