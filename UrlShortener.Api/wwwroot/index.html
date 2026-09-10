@@ -73,10 +73,33 @@
         }
 
         .grid {
-            display: grid;
-            grid-template-columns: 1.25fr 0.75fr;
-            gap: 22px;
+            max-width: 760px;
+            margin: 0 auto;
             padding-bottom: 42px;
+        }
+
+        .admin-card {
+            max-width: 760px;
+            margin: 0 auto 22px;
+        }
+
+        .admin-access-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .admin-access-content {
+            flex: 1;
+        }
+
+            .admin-access-content .card-description {
+                margin-bottom: 0;
+            }
+
+        .admin-access-row button {
+            flex-shrink: 0;
         }
 
         .card {
@@ -328,9 +351,14 @@
         }
 
         @media (max-width: 780px) {
-            .grid {
-                grid-template-columns: 1fr;
+            .admin-access-row {
+                flex-direction: column;
+                align-items: stretch;
             }
+
+                .admin-access-row button {
+                    width: 100%;
+                }
 
             .input-row,
             .short-url-row {
@@ -358,17 +386,21 @@
     </header>
 
     <main class="container">
-        <div class="card" style="margin-bottom:22px;">
-            <div class="card-title">Admin Access</div>
+        <div class="card admin-card">
+            <div class="admin-access-row">
+                <div class="admin-access-content">
+                    <div class="card-title">Admin Access</div>
 
-            <div class="card-description">
-                Generate a temporary admin token to access analytics
-                and deactivation features.
+                    <div class="card-description">
+                        Generate a temporary admin token to access analytics
+                        and deactivation features.
+                    </div>
+                </div>
+
+                <button id="adminTokenButton" class="primary" type="button">
+                    Generate Admin Token
+                </button>
             </div>
-
-            <button id="adminTokenButton" class="primary" type="button">
-                Generate Admin Token
-            </button>
 
             <div id="adminTokenMessage" class="message"></div>
         </div>
@@ -480,71 +512,7 @@
                 </div>
             </section>
 
-            <aside>
-                <div class="card">
-                    <div class="card-title">API capabilities</div>
-                    <div class="card-description">
-                        The application exposes the following core operations.
-                    </div>
 
-                    <div class="detail-row">
-                        <div class="detail-label">CREATE</div>
-                        <div class="detail-value">POST /api/urls</div>
-                    </div>
-
-                    <div class="detail-row">
-                        <div class="detail-label">LOOKUP</div>
-                        <div class="detail-value">GET /api/urls/{shortCode}</div>
-                    </div>
-
-                    <div class="detail-row">
-                        <div class="detail-label">REDIRECT</div>
-                        <div class="detail-value">GET /{shortCode}</div>
-                    </div>
-
-                    <div class="detail-row">
-                        <div class="detail-label">ANALYTICS</div>
-                        <div class="detail-value">GET /api/urls/{shortCode}/analytics</div>
-                    </div>
-
-                    <div class="detail-row">
-                        <div class="detail-label">DEACTIVATE</div>
-                        <div class="detail-value">DELETE /api/urls/{shortCode}</div>
-                    </div>
-
-                    <p class="hint">
-                        URL creation is rate limited and input validation is enforced
-                        by the backend.
-                    </p>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">Engineering notes</div>
-                    <div class="card-description">
-                        Prototype reliability and security features.
-                    </div>
-
-                    <div class="detail-row">
-                        <div class="detail-label">SHORT CODES</div>
-                        <div class="detail-value">Cryptographically secure Base62 generation</div>
-                    </div>
-
-                    <div class="detail-row">
-                        <div class="detail-label">DATABASE</div>
-                        <div class="detail-value">SQLite + Entity Framework Core</div>
-                    </div>
-
-                    <div class="detail-row">
-                        <div class="detail-label">ANALYTICS</div>
-                        <div class="detail-value">Click count + last accessed timestamp</div>
-                    </div>
-
-                    <div class="detail-row">
-                        <div class="detail-label">DEACTIVATION</div>
-                        <div class="detail-value">Soft deactivation with HTTP 410</div>
-                    </div>
-                </div>
-            </aside>
         </div>
     </main>
 
