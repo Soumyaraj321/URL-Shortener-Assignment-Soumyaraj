@@ -1,4 +1,4 @@
-# URL-Shortener-Assignment-Soumyaraj
+# URL-Shortener
 Developed an AI-Assisted Software Engineering System - URL Shortener
 
 # AI-Assisted URL Shortener
